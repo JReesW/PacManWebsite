@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pacman</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<div id="MainDiv">
+	<img src="ThinTitleImage.jpg" id="TitleImage">
+	<div id="ButtonContainer">
+		<button class="ButtonContainerButton" id="Button1">Home</button>
+		<button class="ButtonContainerButton FollowUpButton" id="Button2">About</button>
+		<button class="ButtonContainerButton FollowUpButton" id="Button3">Download</button>
+		<button class="ButtonContainerButton FollowUpButton" id="EmptyButton" disabled></button>
+	</div>
+	<div id="MainBody">
+		<div id="HomeBody">
+			<span class="BodyTitle">Dis the home</span>
+		</div>
+		<div id="AboutBody">
+			<span class="BodyTitle">About us</span>
+		</div>
+		<div id="DownloadBody">
+			<span class="BodyTitle">Dis the download</span>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	document.getElementById("Button1").addEventListener("click", function(e){SwitchBody("Home")})
+	document.getElementById("Button2").addEventListener("click", function(e){SwitchBody("About")})
+	document.getElementById("Button3").addEventListener("click", function(e){SwitchBody("Download")})
+
+	function SwitchBody(bodyName){
+		var bodies = ["Home", "About", "Download"]
+		for(i = 0; i < bodies.length; i++){
+			if(bodies[i] == bodyName){
+				document.getElementById(bodies[i] + "Body").style.display = "initial"
+			}else{
+				document.getElementById(bodies[i] + "Body").style.display = "none"
+			}
+		}
+	}
+</script>
+</body>
+</html>
+
+<!--
+
+Buttons: Home Menu, About (Game, About Us), Download, Disclaimer
+
+-->

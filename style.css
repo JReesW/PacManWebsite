@@ -5,6 +5,7 @@ body {
 #MainDiv {
 	width: 70%;
 	margin: auto;
+	position: relative;
 }
 
 #TitleImage {
@@ -20,6 +21,10 @@ body {
 	border-bottom-width: 0px;
 }
 
+/* -------------------------------------
+			Button Body Styles
+------------------------------------- */
+
 #ButtonContainer {
 	z-index: 2;
 	position: relative;
@@ -27,7 +32,7 @@ body {
 	height: 80px;
 	background-color: darkblue;
 	margin-bottom: 0px;
-	margin-top: -5px;
+	margin-top: -20px;
 	border-radius: 0px;
 	border-color: yellow;
 	border-width: 3px;
@@ -40,23 +45,27 @@ body {
 
 .ButtonContainerButton {
 	height: 30px;
-	width: 20%;
-	margin: 2%;
+	margin: 0;
+	width: 100%;
 	margin-right: 0px;
 	border-style: solid;
 	border-color: blue;
 	background-color: steelblue;
 	border-width: 2px;
 	text-align: center;
-	float: left;
+	/*float: left;*/
 	color: white;
 	text-shadow: 2px 2px 2px black;
-	opacity: 1;
 	transition: 0.3s;
+	cursor: pointer;
+}
+
+.ButtonText {
+	vertical-align: center;
 }
 
 .ButtonContainerButton:hover:enabled {
-	opacity: 0.8;
+	background-color: slateblue;
 	transform: translateY(-5px);
 }
 
@@ -64,16 +73,13 @@ body {
 	margin-left: 0px;
 }
 
-#EmptyButton {
-	width: 36%;
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
+.DropdownButton:hover .DropdownButtonContent {
+	display: inline-block;
 }
 
-#Button1 {
-	border-top-left-radius: 5px;
-	border-bottom-left-radius: 5px;
-}
+/* -------------------------------------
+			Main Body Styles
+------------------------------------- */
 
 #MainBody {
 	border-color: yellow;
@@ -102,6 +108,14 @@ body {
 	display: none;
 }
 
+#GameBody {
+	display: none;
+}
+
+#DisclaimerBody {
+	display: none;
+}
+
 .BodyTitle {
 	font-size: 64px;
 	font-family: "Arial";
@@ -112,3 +126,80 @@ body {
 .BodyTitle:hover {
 	color: gradient(-90deg, pink, blue, pink);
 }
+
+/* Navigation */
+.navigation ul {
+	top: 20px;
+	position: relative;
+	list-style: none;
+	box-sizing: border-box;
+}
+.navigation > ul {
+	position: relative;
+	padding: 0 15px 0 15px;
+}
+
+.navigation > ul > li{
+	position: relative;
+	display: inline-block;
+	margin:0;
+	float:left;
+}
+
+.navigation > ul > li:nth-child(1){
+	width: 20%;
+}
+
+.navigation > ul > li:nth-child(1) > button{
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+.navigation > ul > li:nth-child(2){
+	width: 20%;
+}
+
+.navigation > ul > li:nth-child(3){
+	width: 20%;
+}
+
+.navigation > ul > li:nth-child(4){
+	width: 40%;
+}
+
+.navigation > ul > li:last-child > button{
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+
+.navigation > ul > li > button{
+	display: inline-block;
+}
+
+.navigation > ul > li > ul {
+	position: absolute;
+	display: none;
+	left: 0;
+	top: 30px;
+	margin:0;
+	padding:0;
+	width: 100%;
+}
+
+.navigation > ul > li > ul > li{
+	margin:0;
+}
+
+.navigation > ul > li:hover > ul {
+	display: inline-block;
+}
+
+.BottomButton {
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+
+
+

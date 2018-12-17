@@ -7,45 +7,52 @@
 <body>
 <div id="MainDiv">
 	<img src="ThinTitleImage.jpg" id="TitleImage">
-	<div id="ButtonContainer">
-		<button class="ButtonContainerButton" id="Button1">Home</button>
-		<button class="ButtonContainerButton FollowUpButton" id="Button2">About</button>
-		<button class="ButtonContainerButton FollowUpButton" id="Button3">Download</button>
-		<button class="ButtonContainerButton FollowUpButton" id="EmptyButton" disabled></button>
+	<div id="ButtonContainer" class="navigation">
+		<ul>
+			<li>
+				<button class="ButtonContainerButton tabButton" id="HomeButton" value="HomeBody">Home</button>	
+			</li>
+			<li>
+				<button class="ButtonContainerButton FollowUpButton tabButton" id="AboutButton" disabled>About</button>
+				<ul>
+					<li>
+						<button class="ButtonContainerButton tabButton" value="GameBody">Game</button>
+					</li>
+					<li>
+						<button class="ButtonContainerButton tabButton" value="AboutBody">About us</button>
+					</li>
+					<li>
+						<button class="ButtonContainerButton BottomButton tabButton" value="DisclaimerBody">Disclaimer</button>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<button class="ButtonContainerButton FollowUpButton tabButton" id="DownloadButton" value="DownloadBody">Download</button>				
+			</li>
+			<li>
+				<button class="ButtonContainerButton FollowUpButton" id="EmptyButton" disabled>&nbsp;</button>
+			</li>
+		</ul>
 	</div>
 	<div id="MainBody">
-		<div id="HomeBody">
-			<span class="BodyTitle">Dis the home</span>
+		<div id="HomeBody" class="tabBody">
+			<span class="BodyTitle">sPACtacular</span><br>
+			<img src="GameMainMenu.png" style="width: 60%;">
 		</div>
-		<div id="AboutBody">
+		<div id="AboutBody" class="tabBody">
 			<span class="BodyTitle">About us</span>
 		</div>
-		<div id="DownloadBody">
+		<div id="DownloadBody" class="tabBody">
 			<span class="BodyTitle">Dis the download</span>
+		</div>
+		<div id="GameBody" class="tabBody">
+			<span class="BodyTitle">Dis the gamepage</span>
+		</div>
+		<div id="DisclaimerBody" class="tabBody">
+			<span class="BodyTitle">Dis the disclaimer</span>
 		</div>
 	</div>
 </div>
-<script type="text/javascript">
-	document.getElementById("Button1").addEventListener("click", function(e){SwitchBody("Home")})
-	document.getElementById("Button2").addEventListener("click", function(e){SwitchBody("About")})
-	document.getElementById("Button3").addEventListener("click", function(e){SwitchBody("Download")})
-
-	function SwitchBody(bodyName){
-		var bodies = ["Home", "About", "Download"]
-		for(i = 0; i < bodies.length; i++){
-			if(bodies[i] == bodyName){
-				document.getElementById(bodies[i] + "Body").style.display = "initial"
-			}else{
-				document.getElementById(bodies[i] + "Body").style.display = "none"
-			}
-		}
-	}
-</script>
+<script type="text/javascript" src="script.js"></script>
 </body>
 </html>
-
-<!--
-
-Buttons: Home Menu, About (Game, About Us), Download, Disclaimer
-
--->

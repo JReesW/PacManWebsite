@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test</title>
+	<style type="text/css">
+		img {
+			position: fixed;
+		}
+
+		body {
+			background-color: black;
+		}
+
+		#field {
+			border-color: lightblue;
+			border-style: solid;
+			border-width: 5px;
+			width: 448px;
+			height: 536px;
+			top: 20px;
+			left: 20px;
+			position: fixed;
+			color: white;
+			font-family: monospace;
+		}
+	</style>
+</head>
+<body>
+	<div id="field">
+		<span>&nbsp;&nbsp;&nbsp;SCORE: <span id="score">0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="startText">Press Enter to Start</span></span>
+	</div>
+<script type="text/javascript" src="keyboard.min.js"></script>
+<script type="text/javascript">
+
+/*///////////////////////////////////
+
+Tile codes are as follows:
+
+Walls:
+LR - Left Right
+LD - Left Down
+LU - Left Up
+RD - Right Down
+RU - Right Up
+UD - Up Down
+BR - Barrier (Pacman can't walk through, but the ghosts can)
+
+Gates:
+GL - Gate Left
+GR - Gate Right
+
+Ghosts:
+EB - Red Ghost spawn point
+EO - Orange Ghost spawn point
+EC - Cyan Ghost spawn point
+EP - Pink Ghost spawn point
+
+Other:
+PL - Pellet
+PW - Power Pellet
+ST - Start
+XX - Empty
+DL - Pacman directed left (used for lives)
+CH - Cherry
+
+///////////////////////////////////*/
+
+var map = [
+	["RD","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LD","RD","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LD"],
+	["UD","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","UD","UD","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","UD"],
+	["UD","PL","RD","LR","LR","LD","PL","RD","LR","LR","LR","LD","PL","UD","UD","PL","RD","LR","LR","LR","LD","PL","RD","LR","LR","LD","PL","UD"],
+	["UD","PW","UD","XX","XX","UD","PL","UD","XX","XX","XX","UD","PL","UD","UD","PL","UD","XX","XX","XX","UD","PL","UD","XX","XX","UD","PW","UD"],
+	["UD","PL","RU","LR","LR","LU","PL","RU","LR","LR","LR","LU","PL","RU","LU","PL","RU","LR","LR","LR","LU","PL","RU","LR","LR","LU","PL","UD"],
+	["UD","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","UD"],
+	["UD","PL","RD","LR","LR","LD","PL","RD","LD","PL","RD","LR","LR","LR","LR","LR","LR","LD","PL","RD","LD","PL","RD","LR","LR","LD","PL","UD"],
+	["UD","PL","RU","LR","LR","LU","PL","UD","UD","PL","RU","LR","LR","LD","RD","LR","LR","LU","PL","UD","UD","PL","RU","LR","LR","LU","PL","UD"],
+	["UD","PL","PL","PL","PL","PL","PL","UD","UD","PL","PL","PL","PL","UD","UD","PL","PL","PL","PL","UD","UD","PL","PL","PL","PL","PL","PL","UD"],
+	["RU","LR","LR","LR","LR","LD","PL","UD","RU","LR","LR","LD","PL","UD","UD","PL","RD","LR","LR","LU","UD","PL","RD","LR","LR","LR","LR","LU"],
+	["XX","XX","XX","XX","XX","UD","PL","UD","RD","LR","LR","LU","PL","RU","LU","PL","RU","LR","LR","LD","UD","PL","UD","XX","XX","XX","XX","XX"],
+	["XX","XX","XX","XX","XX","UD","PL","UD","UD","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","UD","UD","PL","UD","XX","XX","XX","XX","XX"],
+	["XX","XX","XX","XX","XX","UD","PL","UD","UD","XX","RD","LR","LR","BR","BR","LR","LR","LD","XX","UD","UD","PL","UD","XX","XX","XX","XX","XX"],
+	["LR","LR","LR","LR","LR","LU","PL","RU","LU","XX","UD","RD","LR","BR","BR","LR","LD","UD","XX","RU","LU","PL","RU","LR","LR","LR","LR","LR"],
+	["GL","XX","XX","XX","XX","XX","PL","PL","PL","XX","UD","UD","EC","ER","EO","EP","UD","UD","XX","PL","PL","PL","XX","XX","XX","XX","XX","GR"],
+	["LR","LR","LR","LR","LR","LD","PL","RD","LD","XX","UD","RU","LR","LR","LR","LR","LU","UD","XX","RD","LD","PL","RD","LR","LR","LR","LR","LR"],
+	["XX","XX","XX","XX","XX","UD","PL","UD","UD","XX","RU","LR","LR","LR","LR","LR","LR","LU","XX","UD","UD","PL","UD","XX","XX","XX","XX","XX"],
+	["XX","XX","XX","XX","XX","UD","PL","UD","UD","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","UD","UD","PL","UD","XX","XX","XX","XX","XX"],
+	["XX","XX","XX","XX","XX","UD","PL","UD","UD","PL","RD","LR","LR","LR","LR","LR","LR","LD","PL","UD","UD","PL","UD","XX","XX","XX","XX","XX"],
+	["RD","LR","LR","LR","LR","LU","PL","RU","LU","PL","RU","LR","LR","LD","RD","LR","LR","LU","PL","RU","LU","PL","RU","LR","LR","LR","LR","LD"],
+	["UD","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","UD","UD","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","UD"],
+	["UD","PL","RD","LR","LR","LD","PL","RD","LR","LR","LR","LD","PL","UD","UD","PL","RD","LR","LR","LR","LD","PL","RD","LR","LR","LD","PL","UD"],
+	["UD","PL","RU","LR","LD","UD","PL","RU","LR","LR","LR","LU","PL","RU","LU","PL","RU","LR","LR","LR","LU","PL","UD","RD","LR","LU","PL","UD"],
+	["UD","PW","PL","PL","UD","UD","PL","PL","PL","PL","PL","PL","PL","ST","PL","PL","PL","PL","PL","PL","PL","PL","UD","UD","PL","PL","PW","UD"],
+	["RU","LR","LD","PL","UD","UD","PL","RD","LD","PL","RD","LR","LR","LR","LR","LR","LR","LD","PL","RD","LD","PL","UD","UD","PL","RD","LR","LU"],
+	["RD","LR","LU","PL","RU","LU","PL","UD","UD","PL","RU","LR","LR","LD","RD","LR","LR","LU","PL","UD","UD","PL","RU","LU","PL","RU","LR","LD"],
+	["UD","PL","PL","PL","PL","PL","PL","UD","UD","PL","PL","PL","PL","UD","UD","PL","PL","PL","PL","UD","UD","PL","PL","PL","PL","PL","PL","UD"],
+	["UD","PL","RD","LR","LR","LR","LR","LU","RU","LR","LR","LD","PL","UD","UD","PL","RD","LR","LR","LU","RU","LR","LR","LR","LR","LD","PL","UD"],
+	["UD","PL","RU","LR","LR","LR","LR","LR","LR","LR","LR","LU","PL","RU","LU","PL","RU","LR","LR","LR","LR","LR","LR","LR","LR","LU","PL","UD"],
+	["UD","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","PL","UD"],
+	["RU","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LR","LU"],
+	["XX","XX","DL","DL","DL","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX","XX"]
+]
+
+//Same as the map array, but then filled with the img DOM elements (aka: tiles)
+var tileMap = []
+
+//Gamestate variable, indicating the current state of the game
+var gamestate = "Start"
+
+//Global timer and countdown value
+var globalTimer = 0
+var staticGlobalTimer = 0
+var countdown = 3
+
+//Tile for the player
+var playerTile
+var ghostTiles = {
+	red: {
+		body: true,
+		eyes: true
+	},
+	orange: {
+		body: true,
+		eyes: true
+	},
+	pink: {
+		body: true,
+		eyes: true
+	},
+	cyan: {
+		body: true,
+		eyes: true
+	}
+}
+
+//Tile codes corresponding to tiles on which the player can walk
+var walkableTiles = ["PL", "PW", "XX", "ST", "GL", "GR"]
+
+var ghostSetDirection = [
+	[192, 224],
+	[240, 224],
+	[224, 224],
+	[208, 224],
+	[208, 208],
+	[224, 208],
+	[208, 192],
+	[224, 192]
+]
+
+//Pixel offsets of all images to fit in the div
+var xoffset = 25
+var yoffset = 41
+
+//Pacman library, containing the player's position, direction, score and potential change in direction
+pacman = {
+	position: {
+		x: 0,
+		y: 0
+	},
+	direction: "L",
+	score: 0,
+	change: {
+		happening: false,
+		direction: "L"
+	}
+}
+
+//Ghosts library, containing the position, direction, target position and activity of each individual ghost
+var ghosts = {
+	cyan: {
+		position: {
+			x: 0,
+			y: 0
+		},
+		direction: "R",
+		target: {
+			x: 0,
+			y: 0
+		},
+		active: false
+	},
+	orange: {
+		position: {
+			x: 0,
+			y: 0
+		},
+		direction: "U",
+		target: {
+			x: 0,
+			y: 0
+		},
+		active: false
+	},
+	pink: {
+		position: {
+			x: 0,
+			y: 0
+		},
+		direction: "L",
+		target: {
+			x: 0,
+			y: 0
+		},
+		active: false
+	},
+	red: {
+		position: {
+			x: 0,
+			y: 0
+		},
+		direction: "U",
+		target: {
+			x: 0,
+			y: 0
+		},
+		active: true
+	}
+}
+
+//Generation of the tileMap based on values found in the map array
+for(y = 0; y < map.length; y++){
+	tileMap.push([])
+	for(x = 0; x < map[y].length; x++){
+		if(map[y][x] == "ST"){
+			pacman.position.x = x
+			pacman.position.y = y
+			var tile = document.createElement("img")
+			tile.src = "PacmanImages/Environment/XX.png"
+			tile.style.top = y*16 + yoffset + "px"
+			tile.style.left = x*16 + xoffset + "px"
+			tileMap[y].push(tile)
+			document.getElementById("field").appendChild(tileMap[y][x])
+			playerTile = document.createElement("img")
+			playerTile.src = "PacmanImages/Environment/DL.png"
+			playerTile.style.top = y*16 + yoffset + "px"
+			playerTile.style.left = x*16 + xoffset + "px"
+			playerTile.style.zIndex = 99
+			pacman.position.x = x*16 + xoffset
+			pacman.position.y = y*16 + yoffset
+			document.getElementById("field").appendChild(playerTile)
+			continue
+		}
+		if(map[y][x] == "ER"){
+			var tile = document.createElement("img")
+			tile.src = "PacmanImages/Environment/XX.png"
+			tile.style.top = y*16 + yoffset + "px"
+			tile.style.left = x*16 + xoffset + "px"
+			tileMap[y].push(tile)
+			document.getElementById("field").appendChild(tileMap[y][x])
+			ghostTiles.red.body = document.createElement("img")
+			ghostTiles.red.body.style.top = y*16 + yoffset + "px"
+			ghostTiles.red.body.style.left = x*16 + xoffset + "px"
+			ghostTiles.red.body.style.zIndex = 998
+			ghosts.red.position.x = x*16 + xoffset
+			ghosts.red.position.y = y*16 + yoffset
+			document.getElementById("field").appendChild(ghostTiles.red.body)
+			ghostTiles.red.eyes = document.createElement("img")
+			ghostTiles.red.eyes.style.top = y*16 + yoffset + "px"
+			ghostTiles.red.eyes.style.left = x*16 + xoffset + "px"
+			ghostTiles.red.eyes.style.zIndex = 999
+			document.getElementById("field").appendChild(ghostTiles.red.eyes)
+			continue
+		}
+		if(map[y][x] == "EO"){
+			var tile = document.createElement("img")
+			tile.src = "PacmanImages/Environment/XX.png"
+			tile.style.top = y*16 + yoffset + "px"
+			tile.style.left = x*16 + xoffset + "px"
+			tileMap[y].push(tile)
+			document.getElementById("field").appendChild(tileMap[y][x])
+			ghostTiles.orange.body = document.createElement("img")
+			ghostTiles.orange.body.style.top = y*16 + yoffset + "px"
+			ghostTiles.orange.body.style.left = x*16 + xoffset + "px"
+			ghostTiles.orange.body.style.zIndex = 998
+			ghosts.orange.position.x = x*16 + xoffset
+			ghosts.orange.position.y = y*16 + yoffset
+			document.getElementById("field").appendChild(ghostTiles.orange.body)
+			ghostTiles.orange.eyes = document.createElement("img")
+			ghostTiles.orange.eyes.style.top = y*16 + yoffset + "px"
+			ghostTiles.orange.eyes.style.left = x*16 + xoffset + "px"
+			ghostTiles.orange.eyes.style.zIndex = 999
+			document.getElementById("field").appendChild(ghostTiles.orange.eyes)
+			continue
+		}
+		if(map[y][x] == "EP"){
+			var tile = document.createElement("img")
+			tile.src = "PacmanImages/Environment/XX.png"
+			tile.style.top = y*16 + yoffset + "px"
+			tile.style.left = x*16 + xoffset + "px"
+			tileMap[y].push(tile)
+			document.getElementById("field").appendChild(tileMap[y][x])
+			ghostTiles.pink.body = document.createElement("img")
+			ghostTiles.pink.body.style.top = y*16 + yoffset + "px"
+			ghostTiles.pink.body.style.left = x*16 + xoffset + "px"
+			ghostTiles.pink.body.style.zIndex = 998
+			ghosts.pink.position.x = x*16 + xoffset
+			ghosts.pink.position.y = y*16 + yoffset
+			document.getElementById("field").appendChild(ghostTiles.pink.body)
+			ghostTiles.pink.eyes = document.createElement("img")
+			ghostTiles.pink.eyes.style.top = y*16 + yoffset + "px"
+			ghostTiles.pink.eyes.style.left = x*16 + xoffset + "px"
+			ghostTiles.pink.eyes.style.zIndex = 999
+			document.getElementById("field").appendChild(ghostTiles.pink.eyes)
+			continue
+		}
+		if(map[y][x] == "EC"){
+			var tile = document.createElement("img")
+			tile.src = "PacmanImages/Environment/XX.png"
+			tile.style.top = y*16 + yoffset + "px"
+			tile.style.left = x*16 + xoffset + "px"
+			tileMap[y].push(tile)
+			document.getElementById("field").appendChild(tileMap[y][x])
+			ghostTiles.cyan.body = document.createElement("img")
+			ghostTiles.cyan.body.style.top = y*16 + yoffset + "px"
+			ghostTiles.cyan.body.style.left = x*16 + xoffset + "px"
+			ghostTiles.cyan.body.style.zIndex = 998
+			ghosts.cyan.position.x = x*16 + xoffset
+			ghosts.cyan.position.y = y*16 + yoffset
+			document.getElementById("field").appendChild(ghostTiles.cyan.body)
+			ghostTiles.cyan.eyes = document.createElement("img")
+			ghostTiles.cyan.eyes.style.top = y*16 + yoffset + "px"
+			ghostTiles.cyan.eyes.style.left = x*16 + xoffset + "px"
+			ghostTiles.cyan.eyes.style.zIndex = 999
+			document.getElementById("field").appendChild(ghostTiles.cyan.eyes)
+			continue
+		}
+		if(map[y][x] == "GL" || map[y][x] == "GR"){
+			var tile = document.createElement("img")
+			tile.src = "PacmanImages/Environment/XX.png"
+			tile.style.top = y*16 + yoffset + "px"
+			tile.style.left = x*16 + xoffset + "px"
+			tileMap[y].push(tile)
+			document.getElementById("field").appendChild(tileMap[y][x])
+			continue
+		}
+		var tile = document.createElement("img")
+		tile.src = "PacmanImages/Environment/" + map[y][x]  + ".png"
+		tile.style.top = y*16 + yoffset + "px"
+		tile.style.left = x*16 + xoffset + "px"
+		tileMap[y].push(tile)
+		document.getElementById("field").appendChild(tileMap[y][x])
+	}
+}
+
+//Causes the Update function to be called every 33ms, which basically gives a 30fps of updates
+var gameLoop = setInterval(Update, 33)
+
+//The general update function, containing everything that needs to be calculated every frame
+function Update(){
+	//If the game is still on the start screen
+	if(gamestate == "Start"){
+		if(globalTimer % 15 == 0){
+
+			if(document.getElementById("startText").style.color == "white"){
+				document.getElementById("startText").style.color = "black"
+			}else{
+				document.getElementById("startText").style.color = "white"
+			}
+		}
+		keyboardJS.bind('enter', function(e) {
+			document.getElementById("startText").style.color = "white"
+			gamestate = "Countdown"
+			staticGlobalTimer = globalTimer
+		})
+	}
+	//Countdown till the game starts
+	if(gamestate == "Countdown"){
+		document.getElementById("startText").innerHTML = "Starting in: " + countdown + "..."
+		if((globalTimer - staticGlobalTimer) % 30 == 29){
+			countdown--
+		}
+		if(countdown < 1){
+			document.getElementById("startText").style.color = "black"
+			gamestate = "Running"
+			var pinkTimer = setTimeout(function(){ghosts.pink.active = true}, 1000)
+			var cyanTimer = setTimeout(function(){ghosts.cyan.active = true}, 3000)
+			var orangeTimer = setTimeout(function(){ghosts.orange.active = true}, 5000)
+		}
+	}
+	//If the game is running
+	if(gamestate == "Running"){
+		var walkable = true
+
+		//Move pacman
+		if(pacman.direction == "L"){
+			//If pacman is centered on the tile
+			if((pacman.position.x - xoffset) % 16 == 0){
+				//If the next tile is walkable
+				if(walkableTiles.includes(map[(pacman.position.y - yoffset) / 16][(pacman.position.x - xoffset) / 16 - 1])){
+					walkable = true
+				}else{
+					walkable = false
+				}
+			}
+			if(walkable){
+				pacman.position.x-=2
+			}
+		}
+		if(pacman.direction == "R"){
+			if((pacman.position.x - xoffset) % 16 == 0){
+				if(walkableTiles.includes(map[(pacman.position.y - yoffset) / 16][(pacman.position.x - xoffset) / 16 + 1])){
+					walkable = true
+				}else{
+					walkable = false
+				}
+			}
+			if(walkable){
+				pacman.position.x+=2
+			}
+		}
+		if(pacman.direction == "U"){
+			if((pacman.position.y - yoffset) % 16 == 0){
+				if(walkableTiles.includes(map[(pacman.position.y - yoffset) / 16 - 1][(pacman.position.x - xoffset) / 16])){
+					walkable = true
+				}else{
+					walkable = false
+				}
+			}
+			if(walkable){
+				pacman.position.y-=2
+			}
+		}
+		if(pacman.direction == "D"){
+			if((pacman.position.y - yoffset) % 16 == 0){
+				if(walkableTiles.includes(map[(pacman.position.y - yoffset) / 16 + 1][(pacman.position.x - xoffset) / 16])){
+					walkable = true
+				}else{
+					walkable = false
+				}
+			}
+			if(walkable){
+				pacman.position.y+=2
+			}
+		}
+
+		//If pacman is centered on a tile
+		if((pacman.position.y - yoffset) % 16 == 0 && (pacman.position.x - xoffset) % 16 == 0){
+			GhostTarget()
+
+			//If pacman is on a pellet, then pick up the pellet and increase pacman's score by 10, while also changing the map tile code to empty
+			if(map[(pacman.position.y - yoffset) / 16][(pacman.position.x - xoffset) / 16] == "PL"){
+				map[(pacman.position.y - yoffset) / 16][(pacman.position.x - xoffset) / 16] = "XX"
+				pacman.score += 10
+			}
+
+			//If a button was pressed to change direction, change it
+			if(pacman.change.happening){
+				if(pacman.change.direction == "U" && walkableTiles.includes(map[(pacman.position.y - yoffset) / 16 - 1][(pacman.position.x - xoffset) / 16])){
+					pacman.direction = "U"
+					pacman.change.happening = false
+				}
+				if(pacman.change.direction == "D" && walkableTiles.includes(map[(pacman.position.y - yoffset) / 16 + 1][(pacman.position.x - xoffset) / 16])){
+					pacman.direction = "D"
+					pacman.change.happening = false
+				}
+				if(pacman.change.direction == "L" && walkableTiles.includes(map[(pacman.position.y - yoffset) / 16][(pacman.position.x - xoffset) / 16 - 1])){
+					pacman.direction = "L"
+					pacman.change.happening = false
+				}
+				if(pacman.change.direction == "R" && walkableTiles.includes(map[(pacman.position.y - yoffset) / 16][(pacman.position.x - xoffset) / 16 + 1])){
+					pacman.direction = "R"
+					pacman.change.happening = false
+				}
+			}
+
+			//Bring pacman to the other side of the map when going through one of the map sides
+			if(map[(pacman.position.y - yoffset) / 16][(pacman.position.x - xoffset) / 16] == "GL"){
+				pacman.position.x += 430
+			}
+			if(map[(pacman.position.y - yoffset) / 16][(pacman.position.x - xoffset) / 16] == "GR"){
+				pacman.position.x -= 430
+			}
+		}
+
+		//Update the map images
+		for(y = 0; y < map.length; y++){
+			for(x = 0; x < map[y].length; x++){
+				if(map[y][x] == "ST" || map[y][x] == "GL" || map[y][x] == "GR" || map[y][x] == "ER" || map[y][x] == "EO" || map[y][x] == "EP" || map[y][x] == "EC"){
+					tileMap[y][x].src = "PacmanImages/Environment/XX.png"
+					continue
+				}
+				tileMap[y][x].src = "PacmanImages/Environment/" + map[y][x]  + ".png"
+			}
+		}
+
+		//Keybindings for changing direction. If it isn't the opposite direction, then pacman will change direction when a tile is available in that particular direction
+		keyboardJS.bind('w', function(e) {
+			pacman.change.direction = ""
+			if(pacman.direction != "U"){
+				if(pacman.direction == "D"){
+					pacman.direction = "U"
+				}else{
+					pacman.change.happening = true
+					pacman.change.direction = "U"
+				}
+			}
+		})
+		keyboardJS.bind('a', function(e) {
+			pacman.change.direction = ""
+			if(pacman.direction != "L"){
+				if(pacman.direction == "R"){
+					pacman.direction = "L"
+				}else{
+					pacman.change.happening = true
+					pacman.change.direction = "L"
+				}
+			}
+		})
+		keyboardJS.bind('s', function(e) {
+			pacman.change.direction = ""
+			if(pacman.direction != "D"){
+				if(pacman.direction == "U"){
+					pacman.direction = "D"
+				}else{
+					pacman.change.happening = true
+					pacman.change.direction = "D"
+				}
+			}
+		})
+		keyboardJS.bind('d', function(e) {
+			pacman.change.direction = ""
+			if(pacman.direction != "R"){
+				if(pacman.direction == "L"){
+					pacman.direction = "R"
+				}else{
+					pacman.change.happening = true
+					pacman.change.direction = "R"
+				}
+			}
+		})
+
+		Ghosts()
+	}
+
+	//Update score
+	document.getElementById("score").innerHTML = pacman.score
+
+	//Update pacman's image tile
+	if((pacman.position.y - yoffset) % 4 == 0 && (pacman.position.x - xoffset) % 4 == 0){
+		playerTile.src = "PacmanImages/Pacman/D" + pacman.direction + (((pacman.position.x - xoffset) + (pacman.position.y - yoffset))%16)/4 +  ".png"
+	}
+	
+	playerTile.style.left = pacman.position.x + "px"
+	playerTile.style.top = pacman.position.y + "px"
+
+	globalTimer++
+}
+
+function GhostTarget(){
+	ghosts.red.target.x = pacman.position.x
+	ghosts.red.target.y = pacman.position.y
+
+	if(pacman.direction == "U"){
+		ghosts.pink.target.x = pacman.position.x
+		ghosts.pink.target.y = pacman.position.y - 32
+
+		ghosts.cyan.target.x = pacman.position.x - 32
+		ghosts.cyan.target.y = pacman.position.y - 32
+	}
+	if(pacman.direction == "D"){
+		ghosts.pink.target.x = pacman.position.x
+		ghosts.pink.target.y = pacman.position.y + 32
+
+		ghosts.cyan.target.x = pacman.position.x + 32
+		ghosts.cyan.target.y = pacman.position.y + 32
+	}
+	if(pacman.direction == "R"){
+		ghosts.pink.target.x = pacman.position.x + 32
+		ghosts.pink.target.y = pacman.position.y
+
+		ghosts.cyan.target.x = pacman.position.x + 32
+		ghosts.cyan.target.y = pacman.position.y - 32
+	}
+	if(pacman.direction == "L"){
+		ghosts.pink.target.x = pacman.position.x - 32
+		ghosts.pink.target.y = pacman.position.y
+
+		ghosts.cyan.target.x = pacman.position.x - 32
+		ghosts.cyan.target.y = pacman.position.y + 32
+	}
+
+	if(Math.abs(ghosts.orange.position.x - pacman.position.x) < 80 && Math.abs(ghosts.orange.position.y - pacman.position.y) < 80){
+		ghosts.pink.target.x = 16
+		ghosts.pink.target.y = 464
+	}else{
+		ghosts.red.target.x = pacman.position.x
+		ghosts.red.target.y = pacman.position.y
+	}
+}
+
+function Ghosts(){
+	//For each ghost in the ghosts object
+	for(x = 0; x < Object.keys(ghosts).length; x++){
+		var ghostName = Object.keys(ghosts)[x]
+		var walkable = true
+		if(ghosts[ghostName].active){
+			if(ghosts[ghostName].direction == "L"){
+				ghosts[ghostName].position.x-=2
+			}
+			if(ghosts[ghostName].direction == "R"){
+				ghosts[ghostName].position.x+=2
+			}
+			if(ghosts[ghostName].direction == "U"){
+				ghosts[ghostName].position.y-=2
+			}
+			if(ghosts[ghostName].direction == "D"){
+				ghosts[ghostName].position.y+=2
+			}
+			if((ghosts[ghostName].position.x - xoffset) % 16 == 0 && (ghosts[ghostName].position.y - yoffset) % 16 == 0){
+				GhostDirection(ghostName)
+				if(map[(ghosts[ghostName].position.y - yoffset) / 16][(ghosts[ghostName].position.x - xoffset) / 16] == "GL"){
+					ghosts[ghostName].position.x += 430
+				}
+				if(map[(ghosts[ghostName].position.y - yoffset) / 16][(ghosts[ghostName].position.x - xoffset) / 16] == "GR"){
+					ghosts[ghostName].position.x -= 430
+				}
+			}
+		}
+
+		if((ghosts[ghostName].position.y - yoffset) % 4 == 0 && (ghosts[ghostName].position.x - xoffset) % 4 == 0){
+			ghostTiles[ghostName].body.src = "PacmanImages/" + ghostName + "/" + ghostName + (((ghosts[ghostName].position.x - xoffset) + (ghosts[ghostName].position.y - yoffset))%16)/4 +  ".png"
+		}
+		ghostTiles[ghostName].eyes.src = "PacmanImages/Eyes/" + ghosts[ghostName].direction +  ".png"
+
+		ghostTiles[ghostName].body.style.left = ghosts[ghostName].position.x + "px"
+		ghostTiles[ghostName].body.style.top = ghosts[ghostName].position.y + "px"
+		ghostTiles[ghostName].eyes.style.left = ghosts[ghostName].position.x + "px"
+		ghostTiles[ghostName].eyes.style.top = ghosts[ghostName].position.y + "px"
+
+	}
+}
+
+function GhostDirection(ghostName){
+	var directionChosen = false
+	var override = false
+
+	for(x = 0; x < ghostSetDirection.length; x++){
+		if(x == 0 && ghostSetDirection[x][0] == ghosts[ghostName].position.x && ghostSetDirection[x][1] == ghosts[ghostName].position.y){
+			ghosts[ghostName].direction = "R"
+			override = true
+		}else if(x == 1 && !override && ghostSetDirection[x][0] == ghosts[ghostName].position.x && ghostSetDirection[x][1] == ghosts[ghostName].position.y){
+			ghosts[ghostName].direction = "L"
+			override = true
+		}else if(x > 1 && !override && ghostSetDirection[x][0] == ghosts[ghostName].position.x && ghostSetDirection[x][1] == ghosts[ghostName].position.y){
+			ghosts[ghostName].direction = "U"
+			console.log("YES")
+			override = true
+		}
+	}
+
+	if(!override){
+		if(walkableTiles.includes(map[(ghosts[ghostName].position.y - yoffset) / 16][(ghosts[ghostName].position.x - xoffset) / 16 + 1]) && ghosts[ghostName].target.x - ghosts[ghostName].position.x > 0 && ghosts[ghostName].direction != "L" && !directionChosen){
+			ghosts[ghostName].direction = "R"
+			directionChosen = true
+		}
+		if(walkableTiles.includes(map[(ghosts[ghostName].position.y - yoffset) / 16][(ghosts[ghostName].position.x - xoffset) / 16 - 1]) && ghosts[ghostName].target.x - ghosts[ghostName].position.x < 0 && ghosts[ghostName].direction != "R" && !directionChosen){
+			ghosts[ghostName].direction = "L"
+			directionChosen = true
+		}
+		if(walkableTiles.includes(map[(ghosts[ghostName].position.y - yoffset) / 16 + 1][(ghosts[ghostName].position.x - xoffset) / 16]) && ghosts[ghostName].target.y - ghosts[ghostName].position.y > 0 && ghosts[ghostName].direction != "U" && !directionChosen){
+			ghosts[ghostName].direction = "D"
+			directionChosen = true
+		}
+		if(walkableTiles.includes(map[(ghosts[ghostName].position.y - yoffset) / 16 - 1][(ghosts[ghostName].position.x - xoffset) / 16]) && ghosts[ghostName].target.y - ghosts[ghostName].position.y < 0 && ghosts[ghostName].direction != "D" && !directionChosen){
+			ghosts[ghostName].direction = "U"
+			directionChosen = true
+		}
+		if(walkableTiles.includes(map[(ghosts[ghostName].position.y - yoffset) / 16][(ghosts[ghostName].position.x - xoffset) / 16 + 1]) && !directionChosen && ghosts[ghostName].direction != "L"){
+			ghosts[ghostName].direction = "R"
+			directionChosen = true
+		}
+		if(walkableTiles.includes(map[(ghosts[ghostName].position.y - yoffset) / 16][(ghosts[ghostName].position.x - xoffset) / 16 - 1]) && !directionChosen && ghosts[ghostName].direction != "R"){
+			ghosts[ghostName].direction = "L"
+			directionChosen = true
+		}
+		if(walkableTiles.includes(map[(ghosts[ghostName].position.y - yoffset) / 16 + 1][(ghosts[ghostName].position.x - xoffset) / 16]) && !directionChosen && ghosts[ghostName].direction != "U"){
+			ghosts[ghostName].direction = "D"
+			directionChosen = true
+		}
+		if(walkableTiles.includes(map[(ghosts[ghostName].position.y - yoffset) / 16 - 1][(ghosts[ghostName].position.x - xoffset) / 16]) && !directionChosen && ghosts[ghostName].direction != "D"){
+			ghosts[ghostName].direction = "U"
+			directionChosen = true
+		}
+	}
+}
+
+/*/////////////////////////////////////////
+
+TO-DO:
+
+-Ghost sprites
+-Ghost AI
+-Powerpill effect
+-Fruit
+-Lives
+-Death collision
+-Gamestates
+
+/////////////////////////////////////////*/
+
+</script>
+</body>
+</html>

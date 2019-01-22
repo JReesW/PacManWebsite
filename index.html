@@ -6,7 +6,7 @@
 </head>
 <body>
 <div id="MainDiv">
-	<img src="ThinTitleImage.jpg" id="TitleImage">
+	<img src="ThinTitleImage.png" id="TitleImage">
 	<div id="ButtonContainer" class="navigation">
 		<ul>
 			<li>
@@ -22,6 +22,9 @@
 				<button class="ButtonContainerButton FollowUpButton tabButton" value="DisclaimerBody">Disclaimer</button>
 			</li>
 			<li>
+				<button class="ButtonContainerButton FollowUpButton tabButton" value="ScreenshotBody">Screenshots</button>
+			</li>
+			<li>
 				<button class="ButtonContainerButton FollowUpButton tabButton" id="DownloadButton" value="DownloadBody">Download</button>	
 			</li>
 		</ul>
@@ -31,8 +34,8 @@
 			<!--<span class="BodyTitle"><i><span style="color: lightblue;">Ghosts </span><span style="color: red;">vs </span><span style="color: yellow;">Pacman</span></i></span><br>-->
 			<br>
 			<br>
-			<img src="GameMainMenu.png" style="width: 75%; height: 75%; border-radius: 10px;"><br><br>
-			<span class="SiteText">Welcome to the website of Parrot Games!<br>Here you can find information about our game ‘Ghosts vs Pacman’ and about our team.</span><br><span>&nbsp;
+			<span class="SiteText">Welcome to the website of Parrot Games!<br>Here you can find information about our game 'Ghosts vs Pacman' and about our team.</span><br><br>
+			<iframe width="672" height="378" src="https://www.youtube.com/embed/LcqPza8kZmE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>&nbsp;
 		</div>
 		<div id="AboutBody" class="tabBody">
 			<div style="width: 95%; margin: auto;">
@@ -41,23 +44,39 @@
 			</div>
 		</div>
 		<div id="DownloadBody" class="tabBody">
-			<span class="BodyTitle">Dis the download</span>
+			<span class="BodyTitle">Download</span><br><br>
+			<span class="SiteText">There is no available download at the moment</span><br>&nbsp;
+		</div>
+		<div id="ScreenshotBody" class="tabBody">
+			<span class="BodyTitle">Screenshots</span>
+			<img src="Screenshots/SelectionScreen.png" style="width: 75%; height: 75%; border-radius: 10px;"><br>
+			<i>Selection screen, where players choose to be a ghost, pacman or to spectate</i><br><br>
+			<img src="Screenshots/GhostView.png" style="width: 75%; height: 75%; border-radius: 10px;"><br>
+			<i>A lone ghost traverses the map in search of Pacman</i><br><br>
+			<img src="Screenshots/Hallway.png" style="width: 75%; height: 75%; border-radius: 10px;"><br>
+			<i>Walking down a hallway, munching through a line of pellets</i><br><br>
+			<img src="Screenshots/Melon.png" style="width: 75%; height: 75%; border-radius: 10px;"><br>
+			<i>The melon, made to switch ghost controls, stands before you</i><br><br>
+			<img src="Screenshots/Teleport.png" style="width: 75%; height: 75%; border-radius: 10px;"><br>
+			<i>A gate, which transports you to the other side of the map</i><br><br>
+
+			<br>&nbsp;
 		</div>
 		<div id="GameBody" class="tabBody">
 			<div style="width: 95%; margin: auto;">
 				<span class="BodyTitle">About the game</span><br><br>
-				<span class="SiteText">Our game ‘Ghosts vs Pacman’ is an improved version of Pacman. We added 3D to the game, so now you can actually run through the maze instead of just hovering above it. We also changed the game from a single player game to a multiplayer game in which up to five people can play against each other. Lastly, we added a bunch of power-ups to the game to make it more interesting. <br><br>
+				<span class="SiteText">Our game 'Ghosts vs Pacman' is an improved version of Pacman. We added 3D to the game, so now you can actually run through the maze instead of just hovering above it. We also changed the game from a single player game to a multiplayer game in which up to five people can play against each other. Lastly, we added a bunch of power-ups to the game to make it more interesting. <br><br>
 
-				Multiplayer introduces tons of new possibilities. You can locally play with up to five people. One player will control Pacman, while the others each control one of the ghosts. While Pacman tries to eat all the pellets, the ghosts have to try and work together to catch Pacman until he’s out of lives. Pacman as well as the ghosts have access to several different power-ups to help win the match, such as speed boosts, ways to go over or through walls, tricks to confuse your opponents and more.<br><br>
-
-				We've also made a version of the original Pacman able to be played on this website <a style="color: yellow;" href="pacmantest.html">right here</a>! (WIP)
+				Multiplayer introduces tons of new possibilities. You can locally play with up to five people. One player will control Pacman, while the others each control one of the ghosts. While Pacman tries to eat all the pellets, the ghosts have to try and work together to catch Pacman until he’s out of lives. Pacman as well as the ghosts have access to several different power-ups to help win the match, such as speed boosts, ways to go over or through walls, tricks to confuse your opponents and more.<br>
 				<br>&nbsp;</span>
 			</div>
 		</div>
 		<div id="DisclaimerBody" class="tabBody">
 			<div style="width: 95%; margin: auto;">
 				<span class="BodyTitle">Disclaimer</span><br><br>
-				<span class="SiteText">This site and its content are part of a project done during the course ‘Gametechnologie introductieproject’ at Utrecht University. The sole purpose of this website is educational and there are no commercial interests involved.<br><br>Our game is a spinoff of ‘Pacman’ which was first released in 1980 by Namco. We checked the content on this website to make sure not to violate any copyrights or other legal rights. If inappropriate content is used accidentally, please inform us and we will make sure to remove it promptly.<br>&nbsp;</span>
+				<span class="SiteText">This site and its content are part of a project done during the course 'Gametechnologie introductieproject' at Utrecht University. The sole purpose of this website is educational and there are no commercial interests involved.<br><br>Our game is a spinoff of 'Pacman' which was first released in 1980 by Namco. We checked the content on this website to make sure not to violate any copyrights or other legal rights. If inappropriate content is used accidentally, please inform us and we will make sure to remove it promptly. <br><br>
+				You can inform us about the website by sending an email to j.r.williams@students.uu.nl
+				<br>&nbsp;</span>
 			</div>
 		</div>
 	</div>

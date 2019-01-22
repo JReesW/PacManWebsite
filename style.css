@@ -12,6 +12,8 @@ body::-webkit-scrollbar {
 	position: relative;
 }
 
+/*dab*/
+
 #TitleImage {
 	width: 100%;
 	z-index: 1;
@@ -154,7 +156,7 @@ body::-webkit-scrollbar {
 }
 
 .navigation > ul > li:nth-child(1){
-	width: 16.66%;
+	width: 16.66%; /*Look, it was 20 before*/
 }
 
 .navigation > ul > li:nth-child(1) > button{
